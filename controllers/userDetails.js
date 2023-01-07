@@ -37,13 +37,19 @@ exports.signUp = async(req, res, next)=>{
 exports.loginUser = async(req, res, next)=>{
     try{
         const {email, password} = req.body
-        const user = await User.findAll({where:{email, password}})
+        const user = await User.findAll({where:{email}})
         
         if(user.length > 0){
-            res.status(201).json({message: 'Login Successful!'})
+            if(user[0].password === password){
+                return res.status(201).json({message: 'Login Successful!'})
+            }
+            else{
+                return res.status(401).json({message: 'wrong password'})
+            }
         }
+ 
         else{
-            res.status(207).json({message: 'Invalid Credentials'})
+            return res.status(207).json({message: 'User not found'})
         }
     }
     catch(error){

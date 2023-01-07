@@ -16,7 +16,7 @@
 
 
     </form>
-    <a href="./SignUp.html">New User Signup</a>
+    <a href="/users/signup">New User Signup</a>
     <div id="existing"></div>
 
     <ul id="listOfUsers"></ul>
@@ -40,11 +40,15 @@
                      console.log('login complete')
                      alert('Log in successful!')
                 }
+               
                 else if(response.status === 207){
-                    document.body.innerHTML += `<div style='color:red'>Invalid Credentials </div>`
+                    document.body.innerHTML += `<div style='color:red'>User not found</div>`
                 }
+               
+                
                 else{
                     throw new error('Failed to log in!')
+                    
                 }
             })
             .catch((err)=>{
