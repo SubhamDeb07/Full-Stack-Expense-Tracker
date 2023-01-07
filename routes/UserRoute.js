@@ -7,9 +7,10 @@ const userController = require('../controllers/userDetails')
 const express = require('express')
 const router = express.Router();
 
-router.get('/users/signup', userController.UserDetails)
+router.get('/users/signup', userController.signupDetails)
+router.get('/users/login', userController.loginDetails)
 router.post('/users/signup', userController.signUp)
-router.get('/users/signup', userController.signedUser)
+router.post('/users/login', userController.loginUser)
 router.get('/users/getUser', userController.getUsers)
 
 module.exports = router
