@@ -1,4 +1,5 @@
 const path = require('path')
+const bcrypt = require('bcrypt')
 const User = require('../models/userDetails')
 
 exports.signupDetails =  (req, res, next) => {
@@ -20,12 +21,17 @@ exports.signUp = async(req, res, next)=>{
         const email = req.body.email;
         const password = req.body.password
 
-        const data = await User.create({
-            username: username,
-            email: email,
-            password: password
+        bcrypt.hash(password, 10, async(err, hash)=>{
+            console.log(err)
+            const data = await User.create({
+                username,
+                email,
+                password:hash
+            })
+            res.status(201).json({newUserDetails: data})
         })
-        res.status(201).json({newUserDetails: data})
+
+    
     }
     catch(error){
         console.log(error)
@@ -40,12 +46,14 @@ exports.loginUser = async(req, res, next)=>{
         const user = await User.findAll({where:{email}})
         
         if(user.length > 0){
-            if(user[0].password === password){
+            bcrypt.compare(password, user[0].password, (err, match)=>{
+            if(match){
                 return res.status(201).json({message: 'Login Successful!'})
             }
             else{
                 return res.status(401).json({message: 'wrong password'})
             }
+        })
         }
  
         else{

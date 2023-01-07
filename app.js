@@ -15,7 +15,7 @@ app.use(cors())
 
 app.use(userRoute)
 
-sequelize.sync().then(result =>{
+sequelize.sync({force: true}).then(result =>{
     console.log('Server started at 3000');
     app.listen(3000); 
 }).catch(err=>{
