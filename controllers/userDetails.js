@@ -2,12 +2,17 @@ const path = require('path')
 const bcrypt = require('bcrypt')
 const User = require('../models/userDetails')
 
+
 exports.signupDetails =  (req, res, next) => {
     res.sendFile(path.join(__dirname, '../', 'views', 'SignUp.html'));
   }
 
   exports.loginDetails =  (req, res, next) => {
     res.sendFile(path.join(__dirname, '../', 'views', 'login.html'));
+  }
+
+  exports.expenseDetails =  (req, res, next) => {
+    res.sendFile(path.join(__dirname, '../', 'views', 'expense.html'));
   }
   
 
@@ -29,6 +34,7 @@ exports.signUp = async(req, res, next)=>{
                 password:hash
             })
             res.status(201).json({newUserDetails: data})
+            
         })
 
     
@@ -37,6 +43,7 @@ exports.signUp = async(req, res, next)=>{
         console.log(error)
         res.status(500).json({error: error})
     }
+    
 }
 
 
@@ -51,7 +58,7 @@ exports.loginUser = async(req, res, next)=>{
                 return res.status(201).json({message: 'Login Successful!'})
             }
             else{
-                return res.status(401).json({message: 'wrong password'})
+                return res.status(400).json({message: 'wrong password'})
             }
         })
         }

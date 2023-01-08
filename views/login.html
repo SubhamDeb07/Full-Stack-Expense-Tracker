@@ -39,6 +39,10 @@
                 if(response.status === 201){
                      console.log('login complete')
                      alert('Log in successful!')
+                     window.location.href = 'http://localhost:3000/users/add-user'
+                }
+                else if(response.status === 400){
+                    document.body.innerHTML += `<div style='color:red'>Wrong Password</div>`
                 }
                
                 else if(response.status === 207){
@@ -52,8 +56,11 @@
                 }
             })
             .catch((err)=>{
-                console.log(err)
+                
+                console.log(JSON.stringify(err))
+                document.body.innerHTML += `<div style='color:red;'>${'Wrong password'}</div>`
             })
+
 
           
         }

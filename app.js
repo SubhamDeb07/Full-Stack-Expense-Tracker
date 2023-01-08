@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 
 const sequelize = require('./Util/database')
 const userRoute = require('./routes/UserRoute')
+const expenseRoute = require('./routes/ExpenseRoute');
 
 
 const cors = require('cors')
@@ -14,6 +15,7 @@ app.use(express.json())
 app.use(cors())
 
 app.use(userRoute)
+app.use('/users', expenseRoute)
 
 sequelize.sync({force: true}).then(result =>{
     console.log('Server started at 3000');
