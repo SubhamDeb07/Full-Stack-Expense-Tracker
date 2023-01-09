@@ -1,15 +1,6 @@
 const path = require('path')
-
+const jwt = require('jsonwebtoken')
 const User = require('../models/expenseDetails')
-
-exports.getExpense =  (req, res, next) => {
-  res.sendFile(path.join(__dirname, '../','views','Expense.html'));
-}
-
-exports.postExpense = (req, res, next) => {
-  console.log(req.body);
-  res.redirect('/user-add-user');
-}
 
 
 
@@ -19,7 +10,7 @@ exports.getExpenses = async (req,res,next)=>{
 
     try{
       
-     const data =  await User.findAll()
+     const data =  await User.findAll({where: {UserId: req.user.id}})
      res.status(201).json(data);
     }
     catch(error) {
@@ -45,6 +36,7 @@ exports.postAddExpenses = async(req, res, next) => {
       Number: Number,
       Description: Description,
       Categories: Categories,
+      UserId: req.user.id
     })
     res.status(201).json({newExpenseDetails: data});
   }

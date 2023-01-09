@@ -1,5 +1,6 @@
 const path = require('path')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const User = require('../models/userDetails')
 
 
@@ -47,6 +48,11 @@ exports.signUp = async(req, res, next)=>{
 }
 
 
+function generateToken(id, username){
+    return jwt.sign({UserId: id, username: username}, 'HiToken!')
+}
+
+
 exports.loginUser = async(req, res, next)=>{
     try{
         const {email, password} = req.body
@@ -55,7 +61,7 @@ exports.loginUser = async(req, res, next)=>{
         if(user.length > 0){
             bcrypt.compare(password, user[0].password, (err, match)=>{
             if(match){
-                return res.status(201).json({message: 'Login Successful!'})
+                return res.status(201).json({message: 'Login Successful!', token: generateToken(user[0].id, user[0].username)})
             }
             else{
                 return res.status(400).json({message: 'wrong password'})
@@ -88,3 +94,4 @@ exports.getUsers = async(req, res, next)=>{
         res.status(500).json({error: error})
     }
 }
+
