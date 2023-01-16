@@ -9,10 +9,17 @@ exports.getExpenses = async (req,res,next)=>{
     console.log("Getting Expenses");
 
     try{
+      const ispremiumuser = req.user.ispremiumuser
       
+      if(ispremiumuser=== true){
      const data =  await User.findAll({where: {UserId: req.user.id}})
-     res.status(201).json(data);
+     res.status(201).json({ispremiumuser: true, data: data});
     }
+    else{
+      const data =  await User.findAll({where: {UserId: req.user.id}})
+      res.status(201).json({ispremiumuser: false, data: data});
+    }
+  }
     catch(error) {
       console.log(error);
       res.status(500).json({error:error});
