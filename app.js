@@ -13,6 +13,7 @@ const forgotPasswordRoute = require('./routes/forgetpassRoute')
 const User = require('./models/userDetails')
 const Expense = require('./models/expenseDetails')
 const Order = require('./models/order')
+const Forgotpassword = require('./models/resetPassDetails')
 
 
 const cors = require('cors')
@@ -28,11 +29,15 @@ app.use('/purchase', purchaseRoute)
 app.use(leaderboardRoute)
 app.use(forgotPasswordRoute)
 
+
 User.hasMany(Expense)
 Expense.belongsTo(User)
 
 User.hasMany(Order);
 Order.belongsTo(User);
+
+User.hasMany(Forgotpassword);
+Forgotpassword.belongsTo(User);
 
 sequelize.sync({force: false}).then(result =>{
     console.log('Server started at 3000');
