@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Expenses</title>
+</head>
+<body>
+    <h1>Your Reports!</h1>
+    <button id="downloadReports">Download Reports</button><br><br>
+    <a href="./Expense.html">Home</a>
+</body>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js"></script>
+<script>
+      const token = localStorage.getItem('token')
+      const download = document.getElementById('downloadReports')
+
+      download.addEventListener('click', async(event)=>{
+        try{
+            const response = axios.post('http://localhost:3000/expense/download', {headers: {'Authorization': token}})
+     
+       if(response.status==200){
+        console.log(response)
+       }
+
+    }
+        
+        catch(error){
+            console.log(error)
+        }
+      })
+</script>
+</html>
