@@ -1,6 +1,7 @@
 const path = require('path')
 const uuid = require('uuid')
 const SgMail = require('@sendgrid/mail')
+require('dotenv').config()
 const bcrypt = require('bcrypt')
 const User = require('../models/userDetails')
 const ForgotPassword = require('../models/resetPassDetails')
@@ -20,7 +21,7 @@ exports.forgotPassword = async(req, res) =>{
             .catch(err=>{
                 throw new Error(err)
             })
-        const SendGridKey = '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'
+        const SendGridKey = process.env.SENGRID_API_KEY
         SgMail.setApiKey(SendGridKey)
 
         const msg = {

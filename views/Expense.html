@@ -106,7 +106,7 @@ form {
         function DisplayOnScreen(user){
             const parentNode = document.getElementById("NumberOfExpenses")
             const childNode = `<li id=${user.id}>${user.Categories}: Expense On-${user.Description}, Price- Inr ${user.Number} 
-            <button onclick=deleteExpense('${user.id}')> Delete</li>`
+            <button onclick='deleteExpense(${user.id})'> Delete</li>`
             parentNode.innerHTML = parentNode.innerHTML + childNode
         
         }
