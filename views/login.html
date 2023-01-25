@@ -4,20 +4,35 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'rel='stylesheet'>
+    <style> body {
+        background-image: url(https://media.99images.com/photos/wallpapers/creative-graphics/pastel-green%20android-iphone-desktop-hd-backgrounds-wallpapers-1080p-4k-9gjbe.jpg);
+    }
+form {
+    text-align: center;
+    background-size: 0cm;
+}
+i{
+    position:relative;
+    left: 18px;
+    top: 2px;
+    color: rgb(10, 10, 10);
+}
+    </style>
     <title>Login</title>
 </head>
 <body>
     <form id="SignUp" onsubmit="login(event)" action="/" method="POST">
-        <label>Email</label><br>
-        <input type="email" id="email" Name="emailId" required><br>
-        <label>Password</label><br>
-        <input type="password" id="password" Name="Password" required><br>
-        <button type="submit">Log In</button>
-
-
+        <h1 style="color:rgb(251, 252, 251)">Login</h1><br>
+        <i class='bx bx-mail-send'></i>
+        <input style="position: relative; ;right: 11px ;width: 250px; height: 35px;padding-left: 30px;  background: rgba(255, 255, 255, 0.231);border: none;border-radius: 40px;outline: none" type="text" name="emailId" id="email" placeholder="Email address"><br><br>
+        <i class='bx bx-lock-alt'></i>
+        <input style="position: relative; ;right: 11px ;width: 250px; height: 35px;padding-left: 30px;  background: rgba(255, 255, 255, 0.231);border: none;border-radius: 40px;outline: none" type="password" id="password" Name="Password" placeholder="Password" required><br><br>
+        <button style="width: 250px; height: 35px;  background: rgba(16, 16, 16, 0.463);border: none;border-radius: 40px;" type="submit">Log In</button><br>
+        <a  style="color: rgb(253, 252, 252); font-style: italic;" href="/forgotPassword.html">Forgot Password?</a><br>
+        Not a member?<a style="color:rgb(251, 247, 247); font-style: italic;" href="/Signup.html"> Signup</a>
     </form>
-    <a href="/password/forgotpassword">Forgot Password</a><br><br>
-    <a href="/users/signup">New User Signup</a>
+
     <div id="existing"></div>
 
     <ul id="listOfUsers"></ul>
@@ -41,7 +56,7 @@
                      console.log('login complete')
                      alert('Log in successful!')
                      localStorage.setItem('token', response.data.token)
-                     window.location.href = 'http://localhost:3000/users/login/expense'
+                     window.location.href = 'http://localhost:3000/Expense.html'
                 }
                 else if(response.status === 400){
                     document.body.innerHTML += `<div style='color:red'>Wrong Password</div>`

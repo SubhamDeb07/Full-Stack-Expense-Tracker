@@ -1,22 +1,7 @@
 const path = require('path')
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const User = require('../models/userDetails')
-
-
-exports.signupDetails =  (req, res, next) => {
-    res.sendFile(path.join(__dirname, '../', 'views', 'SignUp.html'));
-  }
-
-  exports.loginDetails =  (req, res, next) => {
-    res.sendFile(path.join(__dirname, '../', 'views', 'login.html'));
-  }
-
-  exports.expenseDetails =  (req, res, next) => {
-    res.sendFile(path.join(__dirname, '../', 'views', 'expense.html'));
-  }
-  
-
 
 
 exports.signUp = async(req, res, next)=>{

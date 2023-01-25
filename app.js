@@ -1,7 +1,8 @@
 const path = require('path')
+const fs = require('fs')
 const express = require('express')
 const bodyParser = require('body-parser')
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcrypt')
 require('dotenv').config()
 
 const sequelize = require('./Util/database')
@@ -15,6 +16,7 @@ const User = require('./models/userDetails')
 const Expense = require('./models/expenseDetails')
 const Order = require('./models/order')
 const Forgotpassword = require('./models/resetPassDetails')
+const URL = require('./models/URL')
 
 
 const cors = require('cors')
@@ -29,7 +31,9 @@ app.use('/users', expenseRoute)
 app.use('/purchase', purchaseRoute)
 app.use(leaderboardRoute)
 app.use(forgotPasswordRoute)
-
+app.use((req,res)=>{
+    res.sendFile(path.join(__dirname, `/views/${req.url}`))
+})
 
 User.hasMany(Expense)
 Expense.belongsTo(User)
@@ -39,6 +43,9 @@ Order.belongsTo(User);
 
 User.hasMany(Forgotpassword);
 Forgotpassword.belongsTo(User);
+
+User.hasMany(URL);
+URL.belongsTo(User);
 
 sequelize.sync({force: false}).then(result =>{
     console.log('Server started at 3000');

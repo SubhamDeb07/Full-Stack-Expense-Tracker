@@ -4,31 +4,125 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'rel='stylesheet'>
+    <style> body {
+        background-image: url(https://media.99images.com/photos/wallpapers/creative-graphics/pastel-green%20android-iphone-desktop-hd-backgrounds-wallpapers-1080p-4k-9gjbe.jpg);
+    }
+form {
+    text-align: center;
+    background-size: 0cm;
+}
+i{
+    position:relative;
+    left: 18px;
+    top: 2px;
+    color: rgb(10, 10, 10);
+}
+</style>
     <title>Download Expenses</title>
 </head>
 <body>
-    <h1>Your Reports!</h1>
-    <button id="downloadReports">Download Reports</button><br><br>
-    <a href="./Expense.html">Home</a>
-</body>
+    <form>
+    <h1 style="color:rgb(251, 252, 251)">Your Reports!</h1>
+    <button style="width: 250px; height: 35px;  background: rgba(16, 16, 16, 0.463);border: none;border-radius: 40px;" id="downloadReports">Download new report</button><br><br>
+</form>
+<button onclick = "download_List()" id="AllDownloads" style="width: 250px; height: 35px;  background: rgba(16, 16, 16, 0.463);border: none;border-radius: 40px;position: absolute;right: 13.6cm">All your reports!</button><br><br>
+<a style="color: rgb(253, 252, 252); font-style:oblique;" href="./Expense.html">HOME PAGE</a>
+<div id="message"></div>
+<ul id ='downloadedURL'></ul>
+
 <script  src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js"></script>
 <script>
-      const token = localStorage.getItem('token')
-      const download = document.getElementById('downloadReports')
+const token = localStorage.getItem('token')
+const download = document.getElementById('downloadReports')
 
-      download.addEventListener('click', async(event)=>{
-        try{
-            const response = axios.post('http://localhost:3000/expense/download', {headers: {'Authorization': token}})
-     
-       if(response.status==200){
-        console.log(response)
-       }
+window.addEventListener("DOMContentLoaded", (event) => {
 
+axios.get('http://localhost:3000/users/get-user', {headers: {'Authorization': token}})
+.then((response)=>{
+    console.log(response.data.data)
+    if(response.data.ispremiumuser=== true){
+        document.getElementById('message').innerHTML =  "<p style='color:red'><strong>premium user</strong></p>"
+
+  
     }
+    if(response.data.ispremiumuser=== false || response.data.ispremiumuser=== null ){
+        var bt2=document.getElementById('AllDownloads')
+        bt2.onclick = function (){
+            alert('please upgrade to premium to access this feature!')
+          
         
-        catch(error){
-            console.log(error)
+    }
+    }
+   
+})
+.catch((err)=>{
+    console.log(err)
+})
+
+download_List()
+
+})
+download.addEventListener('click', async(event)=>{
+event.preventDefault();
+
+try{
+
+await axios.get('http://localhost:3000/users/download', {headers: {'Authorization': token}})
+.then((response)=>{
+    if(response.status === 201){
+        console.log(response.data);
+        var a = document.createElement("a");
+        a.href = response.data.fileUrl;
+        a.download = 'expenses.csv';
+        a.click();
+    }
+    if(response.status===207){
+        alert('please upgrade to premium to access this feature!')
+        
+        
+    }
+})
+.catch((err)=>{
+    console.log(err)
+})
+
+}
+catch(error){
+    console.log(error);
+    
+    
+}
+
+})
+
+function download_List(){
+    const token =localStorage.getItem('token')
+    var DownloadlistParentElement = document.getElementById('downloadedURL');
+    axios.get('http://localhost:3000/users/getAllUrl', {headers :{"Authorization": token}})
+    .then((response)=>{
+        if(response.status === 200){
+            console.log(response);
+            
+            DownloadlistParentElement.innerHTML = `<h1>Download History</h1>`
+            for(i=0;i<response.data.data.length;i++){
+                DownloadListDisplay(response.data.data[i])
+            
+            
+            
         }
-      })
+    }
+        function DownloadListDisplay(downloadurl){
+        var DownloadlistParentElement = document.getElementById('downloadedURL');
+        childNode= `<l1 id= ${downloadurl.id}> <strong>FileName</strong>- ${downloadurl.filename}<br> <a href=${downloadurl.fileurl}>Click To Download File</a></li><br><br>`
+            DownloadlistParentElement.innerHTML =  DownloadlistParentElement.innerHTML+ childNode
+        }
+    }).catch(err =>{
+        console.log(err)
+    })
+
+}
+      
 </script>
+</body>
 </html>

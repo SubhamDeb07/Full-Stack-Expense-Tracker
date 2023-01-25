@@ -4,41 +4,48 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <title>Add Expenses</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'rel='stylesheet'>
     <style> body {
-        background-image: url(https://wallpaperaccess.com/full/449937.jpg);
+        background-image: url(https://media.99images.com/photos/wallpapers/creative-graphics/pastel-green%20android-iphone-desktop-hd-backgrounds-wallpapers-1080p-4k-9gjbe.jpg);
     }
 form {
     text-align: center;
+    background-size: 0cm;
 }
-    </style>
+i{
+    position:relative;
+    left: 18px;
+    top: 2px;
+    color: rgb(10, 10, 10);
+}
+</style>
 </head>
 <body>
     <div class="container">
     <div class="card-body">
     <form onsubmit="ExpenseDetails(event)" action="/" method="POST">
-        <h1 style="color:rgb(35, 137, 142)">Expense Tracker</h1>
-        <label>Choose ExpenseTracker</label><br>
-        <input id="num" type="number" Name="number" required /><br>
-        <label>Choose a description</label><br>
-        <input id="desc" type="text" Name="description" required /><br>
-        <label>Choose a category</label><br>
-        <select id="categ" Name="categories">
-            <option value="Travelling" >Travelling</option>
+        <h1  style="color:rgb(251, 252, 251)">Expense Tracker</h1>
+        <i class='bx bx-dollar'></i>
+        <input style="position: relative; right: 11px ;width: 250px; height: 35px;padding-left: 30px;  background: rgba(255, 255, 255, 0.231);border: none;border-radius: 40px;outline: none" id="num" type="number" Name="number" placeholder="Amount spent" required /><br><br>
+        <i class='bx bx-list-check'></i>
+        <input style="position: relative; right: 11px ;width: 250px; height: 35px;padding-left: 30px;  background: rgba(255, 255, 255, 0.231);border: none;border-radius: 40px;outline: none" id="desc" type="text" Name="description" placeholder="Spent on" required /><br><br>
+        <select style="position: relative ;width: 280px; height: 35px;padding-left: 30px;  background: rgba(255, 255, 255, 0.231);border: none;border-radius: 40px;outline: none" id="categ" Name="categories">
+            <option  value="Travelling" >Travelling</option>
             <option value="Food" >Food</option>
             <option value="Shopping" >Shopping</option>
             <option value="Clubbing" >Clubbing</option>
             <option value="Gift" >Gift</option>
         </select><br><br>
-        <button style="color:rgb(35, 137, 142)">Add Expenses</button>
+        <button style="width: 250px; height: 35px;  background: rgba(16, 16, 16, 0.463);border: none;border-radius: 40px;">Add Expenses</button>
     </form>
     </div>
 </div>
 <div id="message"></div>
-    <button id="rzp-button1">Premium User</button>
+    <button style="width: 100px; height: 35px;  background: rgba(16, 16, 16, 0.463);border: none;border-radius: 40px;" id="Report" onclick="getReport()">Reports</button>
+    <button style="width: 100px; height: 35px;  background: rgba(16, 16, 16, 0.463);border: none;border-radius: 40px;" id="Board" onclick="getLeaderBoard()">Leaderboard</button>
+    <button style="width: 100px; height: 35px;  background: rgba(186, 32, 32, 0.463);border: none;border-radius: 40px;" id="rzp-button1">Premium User</button>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <button id="showLeaderBoard">Show Leaderboard</button>
 
     <ul id="NumberOfExpenses"></ul>
 
@@ -78,7 +85,7 @@ form {
                 console.log(response.data.data)
                 if(response.data.ispremiumuser=== true){
                     document.getElementById('rzp-button1').style.visibility = "hidden"
-                    document.getElementById('message').innerHTML = "You are a premium user "
+                    document.getElementById('message').innerHTML = "<p style='text-align:center; color:red'><strong>premium user</strong></p>"
 
                 for(i=0;i<response.data.data.length;i++){
                     DisplayOnScreen(response.data.data[i])
@@ -100,13 +107,13 @@ form {
             .catch((err)=>{
                 console.log(err)
             })
-            showLeaderBoard()
+           
 
         })
         function DisplayOnScreen(user){
             const parentNode = document.getElementById("NumberOfExpenses")
             const childNode = `<li id=${user.id}>${user.Categories}: Expense On-${user.Description}, Price- Inr ${user.Number} 
-            <button onclick='deleteExpense(${user.id})'> Delete</li>`
+            <button style="background:rgba(186, 32, 32, 0.463); border: none"   onclick='deleteExpense(${user.id})'>X</li>`
             parentNode.innerHTML = parentNode.innerHTML + childNode
         
         }
@@ -121,26 +128,7 @@ form {
 
             parentNode.removeChild(childNodeToBeDeleted);
         }
-function showLeaderBoard(){
-        document.getElementById('showLeaderBoard').onclick= async()=>{
-    const token =localStorage.getItem('token')
-    const response = await axios.get('http://localhost:3000/premium/showLeaderBoard' , {headers: {"Authorization" : token }})
-    console.log(response);
 
-    var leaderboardParentElement = document.getElementById('leaderBoard');
-    leaderboardParentElement.innerHTML = `<h1> Leader Board </h1>`
-    response.data.forEach((userDetails) => {
-        leaderboardDisplay(userDetails)
-        
-    })
-}
-function leaderboardDisplay(userDetails){
-    var leaderboardParentElement = document.getElementById('leaderBoard');
-    childNode= `<l1 id= ${userDetails.id}> Name- ${userDetails.username} Total Expense- ${userDetails.TotalCost || 0} </li><br>`
-        leaderboardParentElement.innerHTML =  leaderboardParentElement.innerHTML+ childNode
-    }
-
-}
         document.getElementById('rzp-button1').onclick = async function (e){
             const token = localStorage.getItem('token')
             const response = await axios.get('http://localhost:3000/purchase/premiumMembership', {headers: {'Authorization': token}})
@@ -184,16 +172,15 @@ function leaderboardDisplay(userDetails){
  }
 
  function getReport(event){
-    let userType = localStorage.getItem('ispremiumuser')
-    if(userType == true){
-        window.location.href = './reports.html'
-    }
-
+   const reports = document.getElementById('Report')
+   window.location.href = '/reports.html'
  }
 
+ function getLeaderBoard(event){
+   const reports = document.getElementById('Board')
+   window.location.href = '/leaderboard.html'
+ }
  
-
-
     </script>
    
 </body>

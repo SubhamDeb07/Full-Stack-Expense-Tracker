@@ -2,7 +2,7 @@ const path = require('path')
 const uuid = require('uuid')
 const SgMail = require('@sendgrid/mail')
 require('dotenv').config()
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcrypt')
 const User = require('../models/userDetails')
 const ForgotPassword = require('../models/resetPassDetails')
 

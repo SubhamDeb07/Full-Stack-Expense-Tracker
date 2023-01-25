@@ -13,6 +13,10 @@ router.get('/get-user', userAuthentication.authentication, expenseController.get
 
 router.post('/add-user',  userAuthentication.authentication, expenseController.postAddExpenses);
 
+router.get('/download', userAuthentication.authentication, expenseController.downloadExpense)
+
+router.get('/getAllUrl', userAuthentication.authentication, expenseController.getDownloadUrls)
+
 router.delete('/delete-user/:userId', expenseController.deleteExpense);
 
 

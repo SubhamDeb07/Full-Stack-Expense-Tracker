@@ -1,6 +1,9 @@
 const path = require('path')
 const jwt = require('jsonwebtoken')
-const User = require('../models/expenseDetails')
+const User = require('../models/expenseDetails');
+const Downloadurl = require('../models/URL')
+const AWS = require('aws-sdk');
+
 
 
 
@@ -69,8 +72,81 @@ exports.deleteExpense = async (req,res,next)=>{
     console.log(error);
     res.status(500).json('error occured');
   };
+}
+  function uploadToS3(data, filename){
 
+    let s3bucket = new AWS.S3({
+        accessKeyId: process.env.IAM_KEY,
+        secretAccessKey: process.env.IAM_SECRET_KEY
+    })
+        var params = {
+        Bucket: process.env.S3_BUCKET_NAME ,
+        Key: filename,
+        Body: data,
+        ACL: 'public-read'
+    } 
+    return new Promise((resolve, reject)=>{
+      s3bucket.upload(params, (err,s3response)=>{
+        if(err){
+            console.log('Something went wrong',err);
+            reject(err)
+        }
+        else{
+            console.log('success', s3response)
+            resolve(s3response.Location)
+             
+        }
+    });
+    })    
+   
+}
 
+exports.downloadExpense = async(req, res)=>{
+  try{
+    const ispremiumuser = req.user.ispremiumuser
+    
+    const expenses = await req.user.getExpenses()
+  console.log(expenses)
+  const strigifyexpenses = JSON.stringify(expenses)
+  const userId = req.user.id
+  const filename = `expenses${userId}/${new Date()}.txt`
+  const fileUrl = await uploadToS3(strigifyexpenses, filename )
+  const urldata = await req.user.createDownloadurl({
+    filename:filename,
+    fileurl:fileUrl
+  })
+  if(ispremiumuser===true){
+  return res.status(201).json({fileUrl,success: true})
+  }
+if(ispremiumuser===false || ispremiumuser===null){
+  return res.status(207).json({message:'Not a premium user',success: false})
+  }
+}
+  catch(err){
+    return res.status(500).json({fileUrl: '', success:false})
+  }
 
 }
+exports.getDownloadUrls = async (req,res,next)=>{
+  try{
+    const ispremiumuser = req.user.ispremiumuser
+    const data = await Downloadurl.findAll({where: {UserId: req.user.id}})
+    if(data && ispremiumuser===true){
+      return  res.status(200).json({ data , success: true })
+    }
+    if(!data){
+      return res.status(207).json({ message:'no urls found with this user' , success: false});
+
+ 
+    
+    }
+  
+  }catch (err) {
+    res.status(500).json({err:err})
+}
+  
+
+}
+
+
 
