@@ -29,7 +29,7 @@ exports.forgotPassword = async(req, res) =>{
             from: 'subhamdeb409@gmail.com',
             subject: 'Reset Password',
             text: 'Please reset your password',
-            html: `<a href="http://18.183.81.238/password/resetpassword/${id}">Reset password</a>`
+            html: `<a href="http://localhost:18.183.81.238/password/resetpassword/${id}">Reset password</a>`
         }
         console.log(msg)
         SgMail
