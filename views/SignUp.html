@@ -51,11 +51,11 @@ i{
                 password
             }
 
-            axios.post('http://18.183.81.238:3000/users/signup' , obj)
+            axios.post('http://54.249.187.183:3000/users/signup' , obj)
             .then((response)=>{
                 console.log(response)
                 document.body.innerHTML += `<div style='color:green;'>${alert('Successfully signed up!')}</div>`
-                window.location.href = 'http://18.183.81.238:3000/login.html'
+                window.location.href = 'http://54.249.187.183:3000/login.html'
             })
             .catch((err)=>{
                 console.log(err)

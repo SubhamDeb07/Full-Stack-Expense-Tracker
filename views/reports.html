@@ -65,7 +65,7 @@ window.addEventListener("DOMContentLoaded", async(event) => {
         alert('please upgrade to premium to access this feature!')
     }
     }
-           await axios.post(`http://18.183.81.238:3000/users/get-user/${page}`,{Items_Per_Page: Items_Per_Page}, {headers: {'Authorization': token}})
+           await axios.post(`http://54.249.187.183:3000/users/get-user/${page}`,{Items_Per_Page: Items_Per_Page}, {headers: {'Authorization': token}})
             .then((response)=>{
                 console.log(response.data)
 
@@ -87,7 +87,7 @@ event.preventDefault();
 
 try{
 
-await axios.get('http://18.183.81.238:3000/users/download', {headers: {'Authorization': token}})
+await axios.get('http://54.249.187.183:3000/users/download', {headers: {'Authorization': token}})
 .then((response)=>{
     if(response.status === 201){
         console.log(response.data);
@@ -118,7 +118,7 @@ catch(error){
 function download_List(){
     const token =localStorage.getItem('token')
     var DownloadlistParentElement = document.getElementById('downloadedURL');
-    axios.get('http://18.183.81.238:3000/users/getAllUrl', {headers :{"Authorization": token}})
+    axios.get('http://54.249.187.183:3000/users/getAllUrl', {headers :{"Authorization": token}})
     .then((response)=>{
         if(response.status === 200){
             console.log(response);
