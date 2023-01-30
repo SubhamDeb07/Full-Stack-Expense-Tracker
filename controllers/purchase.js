@@ -11,6 +11,11 @@ const Order = require('../models/order');
 const userController = require('./userDetails')
 
 
+function generateToken(id, username, ispremiumuser){
+    return jwt.sign({UserId: id, username: username, ispremiumuser}, 'HiToken!')
+}
+
+
 
 const purchasepremium =async (req, res) => {
     try {
@@ -51,7 +56,7 @@ const updateTransactionStatus = async (req, res ) => {
                 const promise1 = order.update({ status: 'FAILED'});
                 const promise2 =  req.user.update({ ispremiumuser: false }) 
                 Promise.all([promise1, promise2]).then(()=> {
-                    return res.status(407).json({success: false, message: "Transaction Failed"});
+                    return res.status(407).json({success: false, message: "Transaction Failed",token: generateToken(UserId, undefined , false)});
                 }).catch((error ) => {
                     throw new Error(error)
                 })
@@ -69,7 +74,7 @@ const updateTransactionStatus = async (req, res ) => {
     
             // Now setting the promise and sending the satus as on which user above promises will be applied.
             Promise.all([promise3, promise4]).then(()=> {
-                return res.status(202).json({success: true, message: "Transaction Successful"});
+                return res.status(202).json({success: true, message: "Transaction Successful",token: generateToken(UserId, undefined , true)});
             }).catch((error ) => {
                 throw new Error(error)
             })

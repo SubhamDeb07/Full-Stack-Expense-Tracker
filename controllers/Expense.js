@@ -1,6 +1,6 @@
 const path = require('path')
 const jwt = require('jsonwebtoken')
-const User = require('../models/expenseDetails');
+const Expense = require('../models/expenseDetails');
 const Downloadurl = require('../models/URL')
 const AWS = require('aws-sdk');
 
@@ -8,28 +8,44 @@ const AWS = require('aws-sdk');
 
 
 
-exports.getExpenses = async (req,res,next)=>{
-    console.log("Getting Expenses");
 
-    try{
-      const ispremiumuser = req.user.ispremiumuser
-      
-      if(ispremiumuser=== true){
-     const data =  await User.findAll({where: {UserId: req.user.id}})
-     res.status(201).json({ispremiumuser: true, data: data});
-    }
-    else{
-      const data =  await User.findAll({where: {UserId: req.user.id}})
-      res.status(201).json({ispremiumuser: false, data: data});
-    }
-  }
-    catch(error) {
-      console.log(error);
-      res.status(500).json({error:error});
-    }
+
+
+exports.getExpenses = async (req,res,next)=>{
+  console.log("Getting Expenses");
+  let page = +req.params.page ||  1;
+  console.log('ctrolpage',page)
+
+  let Items_Per_Page = +(req.body.Items_Per_Page)|| 5;
+  let totalItems;
+
+  try{
+    let count = await Expense.count({where: {UserId: req.user.id}})
+    totalItems = count;
     
-   
+
+    const data =  await req.user.getExpenses({ offset: (page - 1) * Items_Per_Page, limit: Items_Per_Page })
+
+        return res.status(201).json({data, info: {
+          currentPage: page,
+            hasNextPage: totalItems > page * Items_Per_Page,
+            hasPreviousPage: page > 1,
+            nextPage: +page + 1,
+            previousPage: +page - 1,
+            lastPage: Math.ceil(totalItems / Items_Per_Page),
+          }
+        });
+       
+  }
+  catch(error) {
+    console.log(error);
+    res.status(500).json({error:error});
+  }
+  
+ 
 }
+
+
 
 exports.postAddExpenses = async(req, res, next) => {
   console.log('adding a user');
@@ -42,7 +58,7 @@ exports.postAddExpenses = async(req, res, next) => {
       throw new Error('please enter phone number');
     }
 
-    const data = await User.create({
+    const data = await Expense.create({
       Number: Number,
       Description: Description,
       Categories: Categories,
@@ -64,7 +80,7 @@ exports.deleteExpense = async (req,res,next)=>{
     if(!userId){
       res.status(400).json({error:'id missing'});
     }
-    await User.destroy({where:{id:userId}});
+    await Expense.destroy({where:{id:userId}});
     res.sendStatus(200);
     
   }
@@ -147,6 +163,8 @@ exports.getDownloadUrls = async (req,res,next)=>{
   
 
 }
+
+
 
 
 

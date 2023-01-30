@@ -1,6 +1,5 @@
 const express = require('express')
 const forgotPasswordController = require('../controllers/forgotPassword')
-const { route } = require('./UserRoute')
 const router = express.Router()
 router.get('/password/forgotpassword', forgotPasswordController.fogetpassDetails)
 router.use('/password/forgotpassword', forgotPasswordController.forgotPassword)

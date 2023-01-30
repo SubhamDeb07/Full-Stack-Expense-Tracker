@@ -9,9 +9,10 @@ const router = express.Router();
 
 
 
-router.get('/get-user', userAuthentication.authentication, expenseController.getExpenses);
+router.post('/get-user/:page', userAuthentication.authentication, expenseController.getExpenses);
 
 router.post('/add-user',  userAuthentication.authentication, expenseController.postAddExpenses);
+
 
 router.get('/download', userAuthentication.authentication, expenseController.downloadExpense)
 

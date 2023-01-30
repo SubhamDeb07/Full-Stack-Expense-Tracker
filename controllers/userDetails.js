@@ -13,7 +13,6 @@ exports.signUp = async(req, res, next)=>{
         const password = req.body.password
 
         bcrypt.hash(password, 10, async(err, hash)=>{
-            console.log(err)
             const data = await User.create({
                 username,
                 email,
@@ -33,8 +32,8 @@ exports.signUp = async(req, res, next)=>{
 }
 
 
-function generateToken(id, username){
-    return jwt.sign({UserId: id, username: username}, 'HiToken!')
+function generateToken(id, username, ispremiumuser){
+    return jwt.sign({UserId: id, username: username, ispremiumuser}, 'HiToken!')
 }
 
 
@@ -46,7 +45,7 @@ exports.loginUser = async(req, res, next)=>{
         if(user.length > 0){
             bcrypt.compare(password, user[0].password, (err, match)=>{
             if(match){
-                return res.status(201).json({message: 'Login Successful!', token: generateToken(user[0].id, user[0].username)})
+                return res.status(201).json({message: 'Login Successful!', token: generateToken(user[0].id, user[0].username, user[0].ispremiumuser)})
             }
             else{
                 return res.status(400).json({message: 'wrong password'})
