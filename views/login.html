@@ -8,9 +8,31 @@
     <style> body {
         background-image: url(https://media.99images.com/photos/wallpapers/creative-graphics/pastel-green%20android-iphone-desktop-hd-backgrounds-wallpapers-1080p-4k-9gjbe.jpg);
     }
-form {
+    form {
     text-align: center;
     background-size: 0cm;
+}
+    .container{
+		box-sizing:border-box;
+		position:relative;
+        top:80px;
+        left: 11cm;
+		width:500px;
+		height:300px;
+		border:1px dotted #1f212348;
+		border-radius:50px;
+		padding:10px;
+		font-size:13px;
+		transition-property:background;
+		transition-duration:0.5s;
+		transition-timing-function:ease-in-out;
+}
+
+.container:hover{
+		background:#383a3e27;
+		border:none;
+		border-radius:7px;
+		box-shadow:0 50px 50px 0 #1f212348, 0 50px 50px 0 #1f212348;
 }
 i{
     position:relative;
@@ -22,6 +44,7 @@ i{
     <title>Login</title>
 </head>
 <body>
+    <div class="container">
     <form id="SignUp" onsubmit="login(event)" action="/" method="POST">
         <h1 style="color:rgb(251, 252, 251)">Login</h1><br>
         <i class='bx bx-mail-send'></i>
@@ -32,6 +55,7 @@ i{
         <a  style="color: rgb(253, 252, 252); font-style: italic;" href="/forgotPassword.html">Forgot Password?</a><br>
         Not a member?<a style="color:rgb(251, 247, 247); font-style: italic;" href="/Signup.html"> Signup</a>
     </form>
+</div>
 
     <div id="existing"></div>
 
