@@ -14,9 +14,9 @@ router.post('/get-user/:page', userAuthentication.authentication, expenseControl
 router.post('/add-user',  userAuthentication.authentication, expenseController.postAddExpenses);
 
 
-router.get('/download', userAuthentication.authentication, expenseController.downloadExpense)
+// router.get('/download', userAuthentication.authentication, expenseController.downloadExpense)
 
-router.get('/getAllUrl', userAuthentication.authentication, expenseController.getDownloadUrls)
+// router.get('/getAllUrl', userAuthentication.authentication, expenseController.getDownloadUrls)
 
 router.delete('/delete-user/:userId', expenseController.deleteExpense);
 

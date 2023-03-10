@@ -48,7 +48,7 @@ form {
             alert('please upgrade to premium to access this feature!')
             }
     }
-           await axios.post(`http://54.249.187.183:3000/users/get-user/${page}`,{Items_Per_Page: Items_Per_Page}, {headers: {'Authorization': token}})
+           await axios.post(`http://localhost:3000/users/get-user/${page}`,{Items_Per_Page: Items_Per_Page}, {headers: {'Authorization': token}})
             .then((response)=>{
                 console.log(response.data)
 
@@ -71,7 +71,7 @@ form {
         function showLeaderBoard(){
         document.getElementById('showLeaderBoard').onclick= async()=>{
     const token =localStorage.getItem('token')
-    const response = await axios.get('http://54.249.187.183:3000/premium/showLeaderBoard' , {headers: {"Authorization" : token }})
+    const response = await axios.get('http://localhost:3000/premium/showLeaderBoard' , {headers: {"Authorization" : token }})
     console.log(response);
 
     var leaderboardParentElement = document.getElementById('leaderBoard');
@@ -83,7 +83,7 @@ form {
 }
 function leaderboardDisplay(userDetails){
     var leaderboardParentElement = document.getElementById('leaderBoard');
-    childNode= `<l1 id= ${userDetails.id}> Name- ${userDetails.username} Total Expense- ${userDetails.TotalCost || 0} </li><br>`
+    childNode= `<l1 id= ${userDetails._id}> Name- ${userDetails.username} Total Expense- ${userDetails.TotalCost || 0} </li><br>`
         leaderboardParentElement.innerHTML =  leaderboardParentElement.innerHTML+ childNode
     }
 

@@ -8,6 +8,8 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
+    "mongodb": "^5.1.0",
+    "mongoose": "^7.0.1",
     "mysql2": "^2.3.3",
     "razorpay": "^2.8.4",
     "sequelize": "^6.28.0",

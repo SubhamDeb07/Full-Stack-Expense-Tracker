@@ -9,7 +9,7 @@ const authentication = (req, res, next)=>{
         const user = jwt.verify(token, 'HiToken!')
         console.log('UserId>>>>>', user.UserId)
 
-        User.findByPk(user.UserId).then(user=>{
+        User.findById(user.UserId).then(user=>{
             console.log('user>>>>', user)
             console.log(JSON.stringify(user))
             req.user = user

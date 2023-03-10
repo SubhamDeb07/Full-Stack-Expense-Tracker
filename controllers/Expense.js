@@ -20,11 +20,16 @@ exports.getExpenses = async (req,res,next)=>{
   let totalItems;
 
   try{
-    let count = await Expense.count({where: {UserId: req.user.id}})
+    let count = await Expense.countDocuments({UserId: req.user._id})
+    console.log('hbjkl',count)
     totalItems = count;
     
 
-    const data =  await req.user.getExpenses({ offset: (page - 1) * Items_Per_Page, limit: Items_Per_Page })
+   
+    const data = await Expense.find({ UserId: req.user._id })
+  .skip((page - 1) * Items_Per_Page)
+  .limit(Items_Per_Page);
+    console.log(data)
 
         return res.status(201).json({data, info: {
           currentPage: page,
@@ -58,12 +63,13 @@ exports.postAddExpenses = async(req, res, next) => {
       throw new Error('please enter phone number');
     }
 
-    const data = await Expense.create({
+    const data =  new Expense({
       Number: Number,
       Description: Description,
       Categories: Categories,
       UserId: req.user.id
     })
+    await data.save()
     res.status(201).json({newExpenseDetails: data});
   }
   catch(error){
@@ -77,10 +83,11 @@ exports.deleteExpense = async (req,res,next)=>{
   
   try{
     let userId = req.params.userId;
+    console.log('delete', userId)
     if(!userId){
       res.status(400).json({error:'id missing'});
     }
-    await Expense.destroy({where:{id:userId}});
+    await Expense.findByIdAndDelete({_id:userId});
     res.sendStatus(200);
     
   }
@@ -115,54 +122,107 @@ exports.deleteExpense = async (req,res,next)=>{
     });
     })    
    
-}
+ }
 
-exports.downloadExpense = async(req, res)=>{
-  try{
-    const ispremiumuser = req.user.ispremiumuser
+// exports.downloadExpense = async(req, res)=>{
+//   try{
+//     const ispremiumuser = req.user.ispremiumuser
     
-    const expenses = await req.user.getExpenses()
-  console.log(expenses)
-  const strigifyexpenses = JSON.stringify(expenses)
-  const userId = req.user.id
-  const filename = `expenses${userId}/${new Date()}.txt`
-  const fileUrl = await uploadToS3(strigifyexpenses, filename )
-  const urldata = await req.user.createDownloadurl({
-    filename:filename,
-    fileurl:fileUrl
-  })
-  if(ispremiumuser===true){
-  return res.status(201).json({fileUrl,success: true})
-  }
-if(ispremiumuser===false || ispremiumuser===null){
-  return res.status(207).json({message:'Not a premium user',success: false})
-  }
-}
-  catch(err){
-    return res.status(500).json({fileUrl: '', success:false})
-  }
+//     const expenses = await req.user.getExpenses()
+//   console.log(expenses)
+//   const strigifyexpenses = JSON.stringify(expenses)
+//   const userId = req.user.id
+//   const filename = `expenses${userId}/${new Date()}.txt`
+//   const fileUrl = await uploadToS3(strigifyexpenses, filename )
+//   const urldata = await req.user.createDownloadurl({
+//     filename:filename,
+//     fileurl:fileUrl
+//   })
+//   if(ispremiumuser===true){
+//   return res.status(201).json({fileUrl,success: true})
+//   }
+// if(ispremiumuser===false || ispremiumuser===null){
+//   return res.status(207).json({message:'Not a premium user',success: false})
+//   }
+// }
+//   catch(err){
+//     return res.status(500).json({fileUrl: '', success:false})
+//   }
 
-}
-exports.getDownloadUrls = async (req,res,next)=>{
-  try{
-    const ispremiumuser = req.user.ispremiumuser
-    const data = await Downloadurl.findAll({where: {UserId: req.user.id}})
-    if(data && ispremiumuser===true){
-      return  res.status(200).json({ data , success: true })
-    }
-    if(!data){
-      return res.status(207).json({ message:'no urls found with this user' , success: false});
+// }
+// exports.getDownloadUrls = async (req,res,next)=>{
+//   try{
+//     const ispremiumuser = req.user.ispremiumuser
+//     const data = await Downloadurl.findAll({where: {UserId: req.user.id}})
+//     if(data && ispremiumuser===true){
+//       return  res.status(200).json({ data , success: true })
+//     }
+//     if(!data){
+//       return res.status(207).json({ message:'no urls found with this user' , success: false});
 
  
     
-    }
+//     }
   
-  }catch (err) {
-    res.status(500).json({err:err})
-}
+//   }catch (err) {
+//     res.status(500).json({err:err})
+// }
   
 
-}
+// }
+
+exports.downloadExpense = async (req, res, next) => {
+  try {
+    const ispremiumuser = req.user.ispremiumuser;
+    const expenses = await Expense.find({userId: req.user._id});
+    const cleanedExpenses = expenses.map(expenses=>({
+      ...expenses
+    } ))
+    const stringifiedExpenses = JSON.stringify(cleanedExpenses);
+    const userId = req.user._id;
+
+    const filename = `expenses${userId}/${new Date()}.csv`;
+    const fileUrl = await S3Services.uploadtoS3(stringifiedExpenses, filename);
+    const urldata = await Downloadurl.create({
+      filename: filename,
+      fileurl: fileUrl,
+      userId: req.user._id
+    });
+
+    if (ispremiumuser === true) {
+      const url = urldata.save();
+      res.status(201).json({ fileUrl, urldata, success: true });
+    }
+
+    if (ispremiumuser === false || ispremiumuser === null) {
+      return res
+        .status(207)
+        .json({ message: 'Not a premium user', success: false });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ fileUrl: '', success: false, err: err });
+  }
+};
+
+exports.getDownloadUrls = async (req, res, next) => {
+  try {
+    const ispremiumuser = req.user.ispremiumuser;
+    const data = await Downloadurl.find({ userId: req.user._id });
+
+    if (data && ispremiumuser === true) {
+      return res.status(200).json({ data, success: true });
+    }
+
+    if (!data) {
+      return res
+        .status(404)
+        .json({ message: 'No URLs found with this user', success: false });
+    }
+  } catch (err) {
+    res.status(500).json({ err: err });
+  }
+};
 
 
 
